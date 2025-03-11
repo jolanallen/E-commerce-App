@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import lombok.Getter;
 import java.util.*;
 import org.springframework.boot.autoconfigure.web.servlet.JerseyApplicationPath;
+import org.mindrot.jbcrypt.BCrypt;
 
 
 
@@ -26,14 +27,14 @@ public class User {
         this.id_user = id_user;
     }
 
-    public String hashPassword(String password) {
-        return this.hashPassword.hash(password);
+    private String hashPassword(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
     public boolean checkPassword(String password) {
         return BCrypt.checkpw(password, this.hashPassword);
     }
-    public void authentificates{String email, String password}
+    public void authentificates(String email, String password){}
 
 }
 /*
