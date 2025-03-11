@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>org.example</groupId>
-    <artifactId>StudentManagmentSystem</artifactId>
+    <artifactId>ecommerce</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Student Management</name>
@@ -29,6 +29,14 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
