@@ -9,15 +9,15 @@ import org.mindrot.jbcrypt.BCrypt;
 
 
 public class User {
-    private String username = "Jean";
-    private String email = "jean@gmail.com";
-    private String hashPassword = "abracadabra";
+    private String username = "a";
+    private String email;
+    private String hashPassword = "a@a";
     private ArrayList<Object> orderHistory = new ArrayList<>();
-    private int id_user;
+    private int id_user = 0;
+    private boolean isRegistered = false;
 
 
     public User() {
-
     }
 
     public void registers(String username, String email, String password,int id_user){
@@ -34,16 +34,17 @@ public class User {
     public boolean checkPassword(String password) {
         return BCrypt.checkpw(password, this.hashPassword);
     }
-    public void authentificates(String email, String password){}
-
+    public boolean checkEmail(String email) {
+        return email == this.email;
+    }
+    public void login(String email, String password){
+        if (checkEmail(email) && checkPassword(password)){
+             return isRegistered = true;
+        } else {
+            return System.out.ln("Invalid email or pw")
+        }
+    }
+    public ArrayList<Order> viewOrderHistory(){
+        return orderHistory.isEmpty() ? null : orderHistory;
+    }
 }
-/*
-User Class
-Attributes:
-
-username, email, password, orderHistory (list of orders).
-Methods:
-
-register(): Registers a new user.
-login(): Authenticates the user.
-viewOrderHistory(): Retrieves past orders.*/

@@ -9,24 +9,18 @@ import java.util.List;
 @RestController
 @RequestMapping("/api") // URL de base pour l'API
 public class API {
-    /*private School ynov = new School("Ynov");
+    private School ynov = new School("Ynov");
     private Course poo = new Course("Poo", 1, 14);
     private Course linux = new Course("Linux", 2, 14);
     private GraduateStudent john = new GraduateStudent("John", 0, 18, "computer science");
     private UndergraduateStudent jack = new UndergraduateStudent("Jack", 1, 19, "human genome");
     private GraduateStudent janne = new GraduateStudent("Janne", 2, 18, "network");
-*/
-    private ArrayList<User> allUser = new ArrayList<>();
+
+    private ArrayList<Student> allStudents = new ArrayList<>();
 
 
     public API() {
-
-
-
-
-
-
-        /*ynov.addCourses(poo);
+        ynov.addCourses(poo);
         ynov.addCourses(linux);
 
         allStudents.add(john);
@@ -48,7 +42,7 @@ public class API {
 
         janne.addGrade(12.5f);
         janne.addGrade(14.0f);
-        janne.addGrade(13.5f);*/
+        janne.addGrade(13.5f);
     }
 
     @GetMapping("/api")
@@ -99,8 +93,8 @@ public class API {
     @PostMapping("/students")
     public ResponseEntity<String> addUnderGraduateStudent(@RequestBody UndergraduateStudent student) {
         student.setStudentId(allStudents.size() + 1);
-          allStudents.add(student);
-          return ResponseEntity.ok("Étudiant ajouté : " + student.getName());
+        allStudents.add(student);
+        return ResponseEntity.ok("Étudiant ajouté : " + student.getName());
     }
 
     // Add new graduate student (POST)
