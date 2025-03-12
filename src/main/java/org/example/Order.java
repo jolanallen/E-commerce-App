@@ -1,13 +1,8 @@
 package org.example;
 
-import java.util.ArrayList;
-import lombok.Getter;
-import java.util.*;
-package org.example;
-
 import org.springframework.boot.autoconfigure.web.servlet.JerseyApplicationPath;
 import org.mindrot.jbcrypt.BCrypt;
-
+import java.util.ArrayList;
 
 
 public class Order {
@@ -17,7 +12,7 @@ public class Order {
     private ArrayList<Product> items;
     private String status;
 
-    public Order(User user, List<Product> items) {
+    public Order(User user, ArrayList<Product> items) {
         this.orderID = orderCounter++;
         this.user = user;
         this.items = new ArrayList<>(items);

@@ -1,9 +1,5 @@
 package org.example;
 
-import java.util.ArrayList;
-import lombok.Getter;
-package org.example;
-
 import java.util.*;
 import org.springframework.boot.autoconfigure.web.servlet.JerseyApplicationPath;
 import org.mindrot.jbcrypt.BCrypt;
@@ -24,9 +20,13 @@ public class Product {
     }
 
     public void updateStock(int quantity) {
-        //oublie pas de demander au prof si dans les bonnes pratiques on peut faire ça ou tropo moche
-        return stockQuantity >= quantity ? stockQuantity -= quantity : System.out.println("Insufficient stock!");
+        if (stockQuantity >= quantity) {
+            stockQuantity -= quantity;
+        } else {
+            System.out.println("Insufficient stock!");
+        }
     }
+
 
     public String getProductDetails() {
         return "Product: " + productName + ", Price: " + price + ", Stock: " + stockQuantity;

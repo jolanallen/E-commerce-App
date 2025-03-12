@@ -12,12 +12,15 @@ public class User {
     private String username = "a";
     private String email;
     private String hashPassword = "a@a";
-    private ArrayList<Object> orderHistory = new ArrayList<>();
+    private ArrayList<Order> orderHistory = new ArrayList<>();
     private int id_user = 0;
     private boolean isRegistered = false;
 
 
-    public User() {
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.hashPassword = hashPassword(password);
     }
 
     public void registers(String username, String email, String password,int id_user){
@@ -37,11 +40,13 @@ public class User {
     public boolean checkEmail(String email) {
         return email == this.email;
     }
-    public void login(String email, String password){
-        if (checkEmail(email) && checkPassword(password)){
-             return isRegistered = true;
+    public boolean login(String email, String password) {
+        if (this.email.equals(email) && this.hashPassword.equals(password)) {
+            System.out.println("Login successful.");
+            return true;
         } else {
-            return System.out.ln("Invalid email or pw")
+            System.out.println("Invalid credentials.");
+            return false;
         }
     }
     public ArrayList<Order> viewOrderHistory(){

@@ -9,40 +9,29 @@ import java.util.List;
 @RestController
 @RequestMapping("/api") // URL de base pour l'API
 public class API {
-    private School ynov = new School("Ynov");
-    private Course poo = new Course("Poo", 1, 14);
-    private Course linux = new Course("Linux", 2, 14);
-    private GraduateStudent john = new GraduateStudent("John", 0, 18, "computer science");
-    private UndergraduateStudent jack = new UndergraduateStudent("Jack", 1, 19, "human genome");
-    private GraduateStudent janne = new GraduateStudent("Janne", 2, 18, "network");
 
-    private ArrayList<Student> allStudents = new ArrayList<>();
+    private ArrayList<User> allUsers = new ArrayList<>();
+    private ArrayList<Product> allProducts = new ArrayList<>();
 
 
     public API() {
-        ynov.addCourses(poo);
-        ynov.addCourses(linux);
+        User user1 = new RegularUser("john_doe", "john@example.com", "password123");
+        allUsers.add(user1);
+        user1.login("john@example.com", "password123");
 
-        allStudents.add(john);
-        allStudents.add(jack);
-        allStudents.add(janne);
+        Product product1 = new Product("Laptop", 101, 1200.99, 10);
+        Product product2 = new Product("Phone", 102, 699.49, 5);
 
-        poo.enrollStudent(john);
-        poo.enrollStudent(janne);
-        linux.enrollStudent(jack);
-        linux.enrollStudent(janne);
+        allProducts.add(product1);
+        allProducts.add(product2);
 
-        john.addGrade(13.0f);
-        john.addGrade(17.5f);
-        john.addGrade(15.5f);
+        Cart cart = new Cart(user1);
+        cart.addProduct(product1);
+        cart.addProduct(product2);
 
-        jack.addGrade(16.5f);
-        jack.addGrade(19.5f);
-        jack.addGrade(18.0f);
-
-        janne.addGrade(12.5f);
-        janne.addGrade(14.0f);
-        janne.addGrade(13.5f);
+        double total = cart.calculateTotal();
+        PaymentMethod payment = new CreditCard();
+        payment.processPayment(total);
     }
 
     @GetMapping("/api")
@@ -50,27 +39,22 @@ public class API {
         return "api";
     }
 
-    // School (GET)
-    @GetMapping
-    public ResponseEntity<School> getSchool() {
-        return ResponseEntity.ok(ynov);
+
+    // List all products.
+    @GetMapping("/products")
+    public ResponseEntity<List<Product>> getProducts() {
+        return ResponseEntity.ok(allProducts);
     }
 
-    // All courses
-    @GetMapping("/courses")
-    public ResponseEntity<List<Course>> getCourses() {
-        return ResponseEntity.ok(ynov.getCourses());
+    // List all users.
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getUsers() {
+        return ResponseEntity.ok(allUsers);
     }
-
-    // All students
-    @GetMapping("/students")
-    public ResponseEntity<List<Student>> getStudents() {
-        return ResponseEntity.ok(allStudents);
-    }
-
-    // Student single
-    @GetMapping("/students/{id}")
-    public ResponseEntity<Student> getUniqueStudent(@PathVariable int id) {
+/*
+    // Retrieve product details
+    @GetMapping("/products/{id}")
+    public ResponseEntity<Product> getUniqueProducts(@PathVariable int id) {
         Student student = ynov.getStudentById(id);
         if (student == null) {
             return ResponseEntity.notFound().build();
@@ -78,8 +62,18 @@ public class API {
         return ResponseEntity.ok(student);
     }
 
-    // Students from single course
-    @GetMapping("courses/{id}")
+    // Retrieve order details.
+    @GetMapping("/orders/{id}")
+    public ResponseEntity<List<>> getStudentsFromCourses(@PathVariable int id) {
+        Course course = ynov.getCourseByCode(id);
+        if (course == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(course.getStudents());
+    }
+
+    //  Retrieve user order history.
+    @GetMapping("/users/{id}/orders")
     public ResponseEntity<List<Student>> getStudentsFromCourses(@PathVariable int id) {
         Course course = ynov.getCourseByCode(id);
         if (course == null) {
@@ -89,24 +83,26 @@ public class API {
     }
 
 
-    // Add new undergraduatestudent (POST)
-    @PostMapping("/students")
+
+
+    //  Register a new user (POST)
+    @PostMapping("/users/register")
     public ResponseEntity<String> addUnderGraduateStudent(@RequestBody UndergraduateStudent student) {
         student.setStudentId(allStudents.size() + 1);
         allStudents.add(student);
         return ResponseEntity.ok("Étudiant ajouté : " + student.getName());
     }
 
-    // Add new graduate student (POST)
-    @PostMapping("/students/graduates")
+    // Authenticate a user (POST)
+    @PostMapping("/users/login")
     public ResponseEntity<String> addGraduateStudent(@RequestBody GraduateStudent student) {
         student.setStudentId(allStudents.size() + 1);
         allStudents.add(student);
         return ResponseEntity.ok("Étudiant ajouté : " + student.getName());
     }
 
-    // Add student to another course (POST)
-    @PostMapping("/enrollments")
+    //  Add a new product. (POST)
+    @PostMapping("/products")
     public ResponseEntity<String> addStudenttoCourse(@RequestBody Student student, @RequestParam int courseCode) {
         Course course = ynov.getCourseByCode(courseCode);
         if (course != null) {
@@ -116,16 +112,16 @@ public class API {
         return ResponseEntity.badRequest().body("Cours non trouvé");
     }
 
-    // Add new course to school (POST)
-    @PostMapping("/courses")
+    // Add a product to the user’s cart (POST)
+    @PostMapping("/cart/add")
     public ResponseEntity<String> addCourse(@RequestBody Course course) {
         course.setCourseCode(ynov.getCourses().size() + 1);
         ynov.addCourses(course);
         return ResponseEntity.ok("Cours ajouté : " + course.getCourseName());
     }
 
-    // Add grade to student (POST)
-    @PostMapping("students/{id}/grades")
+    // Remove a product from the cart (POST)
+    @PostMapping("/cart/remove")
     public ResponseEntity<String> addGrade(@RequestParam Float grade,@PathVariable int studentId) {
         Student student = ynov.getStudentById(studentId);
         if (student != null) {
@@ -134,4 +130,14 @@ public class API {
         }
         return ResponseEntity.badRequest().body("Étudiant non trouvé");
     }
-}
+
+    // Confirm an order. (POST)
+    @PostMapping("/orders/place")
+    public ResponseEntity<String> addGrade(@RequestParam Float grade,@PathVariable int studentId) {
+        Student student = ynov.getStudentById(studentId);
+        if (student != null) {
+            student.addGrade(grade);
+            return ResponseEntity.ok("Note ajoutée : " + grade);
+        }
+        return ResponseEntity.badRequest().body("Étudiant non trouvé");*/
+    }
