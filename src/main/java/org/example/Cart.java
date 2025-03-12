@@ -1,8 +1,5 @@
 package org.example;
 
-import java.util.ArrayList;
-package org.example;
-
 import lombok.Getter;
 import java.util.*;
 import org.springframework.boot.autoconfigure.web.servlet.JerseyApplicationPath;

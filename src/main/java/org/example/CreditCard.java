@@ -1,4 +1,4 @@
-ppackage org.example;
+package org.example;
 
 public class CreditCard extends PaymentMethod {
     @Override
