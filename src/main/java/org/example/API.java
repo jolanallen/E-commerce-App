@@ -10,20 +10,21 @@ import java.util.List;
 @RequestMapping("/api") // URL de base pour l'API
 public class API {
 
-    private ArrayList<User> allUsers = new ArrayList<>();
-    private ArrayList<Product> allProducts = new ArrayList<>();
+    private Warehouse warehouse = new Warehouse();
+    private AllUsers allUsers = new AllUsers();
+
 
 
     public API() {
         User user1 = new RegularUser("john_doe", "john@example.com", "password123");
-        allUsers.add(user1);
+        allUsers.addUser(user1);
         user1.login("john@example.com", "password123");
 
         Product product1 = new Product("Laptop", 101, 1200.99, 10);
         Product product2 = new Product("Phone", 102, 699.49, 5);
 
-        allProducts.add(product1);
-        allProducts.add(product2);
+        warehouse.addProduct(product1);
+        warehouse.addProduct(product2);
 
         Cart cart = new Cart(user1);
         cart.addProduct(product1);
@@ -43,28 +44,28 @@ public class API {
     // List all products.
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getProducts() {
-        return ResponseEntity.ok(allProducts);
+        return ResponseEntity.ok(warehouse.getWarehouse());
     }
 
     // List all users.
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers() {
-        return ResponseEntity.ok(allUsers);
+        return ResponseEntity.ok(allUsers.getListOfUsers());
     }
-/*
+
     // Retrieve product details
     @GetMapping("/products/{id}")
-    public ResponseEntity<Product> getUniqueProducts(@PathVariable int id) {
-        Student student = ynov.getStudentById(id);
-        if (student == null) {
+    public ResponseEntity<Product> getUniqueProduct(@PathVariable int id) {
+        Product product = warehouse.getProductById(id);
+        if (product == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(student);
+        return ResponseEntity.ok(product);
     }
 
     // Retrieve order details.
     @GetMapping("/orders/{id}")
-    public ResponseEntity<List<>> getStudentsFromCourses(@PathVariable int id) {
+    public ResponseEntity<List<Order>> getOrderById(@PathVariable int id) {
         Course course = ynov.getCourseByCode(id);
         if (course == null) {
             return ResponseEntity.notFound().build();
@@ -81,6 +82,12 @@ public class API {
         }
         return ResponseEntity.ok(course.getStudents());
     }
+
+
+
+
+
+
 
 
 
