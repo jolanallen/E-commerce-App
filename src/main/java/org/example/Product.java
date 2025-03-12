@@ -3,11 +3,12 @@ package org.example;
 import java.util.*;
 import org.springframework.boot.autoconfigure.web.servlet.JerseyApplicationPath;
 import org.mindrot.jbcrypt.BCrypt;
-
+import lombok.Getter;
 
 
 public class Product {
     private String productName;
+    @Getter
     private int productID;
     private double price;
     private int stockQuantity;
@@ -26,7 +27,6 @@ public class Product {
             System.out.println("Insufficient stock!");
         }
     }
-
 
     public String getProductDetails() {
         return "Product: " + productName + ", Price: " + price + ", Stock: " + stockQuantity;
