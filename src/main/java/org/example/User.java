@@ -1,47 +1,58 @@
 package org.example;
 
+import org.mindrot.jbcrypt.BCrypt;
 import java.util.ArrayList;
 import lombok.Getter;
-import java.util.*;
-import org.springframework.boot.autoconfigure.web.servlet.JerseyApplicationPath;
-import org.mindrot.jbcrypt.BCrypt;
 
-
-
+@Getter
 public class User {
-    private String username = "a";
+    private String username;
     private String email;
-    private String hashPassword = "a@a";
-    private ArrayList<Order> orderHistory = new ArrayList<>();
-    private int id_user = 0;
-    private boolean isRegistered = false;
+    private String password;
+    private ArrayList<Order> orderHistory;
+    private int id_user;
+    private boolean isRegistered;
+    private Cart cart;
 
 
+    // Constructeur
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
-        this.hashPassword = hashPassword(password);
+        this.password = hashPassword(password);
+        this.isRegistered = true;
+        this.orderHistory = new ArrayList<>();
+        this.cart = new Cart(this);
     }
 
-    public void registers(String username, String email, String password,int id_user){
+    // Méthode d'inscription
+    public void registers(String username, String email, String password) {
         this.username = username;
         this.email = email;
-        this.hashPassword = hashPassword(password);
-        this.id_user = id_user;
+        this.password = hashPassword(password);
+        this.isRegistered = true;
+        this.orderHistory = new ArrayList<>();
+        this.cart = new Cart(this);
     }
 
+    // Hachage du mot de passe
     private String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
+    // Vérifier un mot de passe
     public boolean checkPassword(String password) {
-        return BCrypt.checkpw(password, this.hashPassword);
+        return BCrypt.checkpw(password, this.password);
     }
+
+    // Vérifier un email
     public boolean checkEmail(String email) {
-        return email == this.email;
+        return this.email.equals(email);
     }
+
+    // Connexion utilisateur
     public boolean login(String email, String password) {
-        if (this.email.equals(email) && this.hashPassword.equals(password)) {
+        if (this.email.equals(email) && checkPassword(password)) {
             System.out.println("Login successful.");
             return true;
         } else {
@@ -49,7 +60,11 @@ public class User {
             return false;
         }
     }
-    public ArrayList<Order> viewOrderHistory(){
+
+    // Historique des commandes
+    public ArrayList<Order> viewOrderHistory() {
         return orderHistory.isEmpty() ? null : orderHistory;
     }
+
+
 }

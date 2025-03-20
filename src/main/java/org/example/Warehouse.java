@@ -5,22 +5,23 @@ import lombok.Getter;
 
 public class Warehouse {
     @Getter
-    private ArrayList<Product> warehouse;
+    public ArrayList<Product> warehouselist;
 
     public Warehouse (){
-        this.warehouse = new ArrayList<>();
+        this.warehouselist = new ArrayList<>();
     }
 
     public void addProduct(Product product){
-        warehouse.add(product);
+        warehouselist.add(product);
     }
 
     public Product getProductById(int productId) {
-        for (Product product : warehouse) {
+        for (Product product : warehouselist) {
             if (product.getProductID() == productId) {  // Correction ici
                 return product;
             }
         }
         return null;
     }
+
 }
