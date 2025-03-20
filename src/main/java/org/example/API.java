@@ -3,6 +3,7 @@ package org.example;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +11,8 @@ import java.util.List;
 @RequestMapping("/api") // URL de base pour l'API
 public class API {
 
-    private Warehouse warehouse = new Warehouse();
-    private AllUsers allUsers = new AllUsers();
-
+    public Warehouse warehouse = new Warehouse();
+    public AllUsers allUsers = new AllUsers();
 
 
     public API() {
@@ -31,26 +31,26 @@ public class API {
         cart.addProduct(product2);
 
         double total = cart.calculateTotal();
-        PaymentMethod payment = new CreditCard();
+        CreditCard payment = new CreditCard();
         payment.processPayment(total);
     }
 
-    @GetMapping("/api")
+    @GetMapping("/")
     public String getApi() {
-        return "api";
+        return "api est le best";
     }
 
 
     // List all products.
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts() {
-        return ResponseEntity.ok(warehouse.getWarehouse());
+    public ResponseEntity<ArrayList<Product>> getProducts() {
+        return ResponseEntity.ok(warehouse.warehouselist);
     }
 
     // List all users.
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getUsers() {
-        return ResponseEntity.ok(allUsers.getListOfUsers());
+    public ResponseEntity<ArrayList<User>> getUsers() {
+        return ResponseEntity.ok(allUsers.listOfUsers);
     }
 
     // Retrieve product details
@@ -63,88 +63,96 @@ public class API {
         return ResponseEntity.ok(product);
     }
 
-    // Retrieve order details.
-    @GetMapping("/orders/{id}")
-    public ResponseEntity<List<Order>> getOrderById(@PathVariable int id) {
-        Course course = ynov.getCourseByCode(id);
-        if (course == null) {
-            return ResponseEntity.notFound().build();
+
+    // register user (POST)
+    @PostMapping("/register")
+    public ResponseEntity<String> newRegister(@RequestBody User user) {
+        // Vérifier si l'email est déjà utilisé
+        for (User u : allUsers.listOfUsers) {
+            if (u.getEmail().equals(user.getEmail())) {
+                return ResponseEntity.badRequest().body("Erreur : Cet email est déjà utilisé !");
+            }
         }
-        return ResponseEntity.ok(course.getStudents());
+
+        user.registers(user.getUsername(), user.getEmail(), user.getPassword());
+        Cart cart = new Cart(user);
+        allUsers.addUser(user);
+
+        return ResponseEntity.ok("Utilisateur ajouté avec succès : " + user.getUsername());
     }
 
-    //  Retrieve user order history.
-    @GetMapping("/users/{id}/orders")
-    public ResponseEntity<List<Student>> getStudentsFromCourses(@PathVariable int id) {
-        Course course = ynov.getCourseByCode(id);
-        if (course == null) {
-            return ResponseEntity.notFound().build();
+    // authenticate (POST)
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody User user) {
+        String email = user.getEmail();
+        String password = user.getPassword();
+
+        // Boucler pour retrouver l'utilisateur
+        for (User u : allUsers.listOfUsers) {
+            if (u.checkEmail(email) && u.checkPassword(password)) {
+                return ResponseEntity.ok("Connexion réussie pour : " + user.getUsername());
+            }
         }
-        return ResponseEntity.ok(course.getStudents());
+        return ResponseEntity.badRequest().body("Échec de la connexion : Identifiants invalides.");
     }
 
-
-
-
-
-
-
-
-
-
-    //  Register a new user (POST)
-    @PostMapping("/users/register")
-    public ResponseEntity<String> addUnderGraduateStudent(@RequestBody UndergraduateStudent student) {
-        student.setStudentId(allStudents.size() + 1);
-        allStudents.add(student);
-        return ResponseEntity.ok("Étudiant ajouté : " + student.getName());
-    }
-
-    // Authenticate a user (POST)
-    @PostMapping("/users/login")
-    public ResponseEntity<String> addGraduateStudent(@RequestBody GraduateStudent student) {
-        student.setStudentId(allStudents.size() + 1);
-        allStudents.add(student);
-        return ResponseEntity.ok("Étudiant ajouté : " + student.getName());
-    }
-
-    //  Add a new product. (POST)
+    // Add a new product (POST)
     @PostMapping("/products")
-    public ResponseEntity<String> addStudenttoCourse(@RequestBody Student student, @RequestParam int courseCode) {
-        Course course = ynov.getCourseByCode(courseCode);
-        if (course != null) {
-            course.enrollStudent(student);
-            return ResponseEntity.ok("Étudiant ajouté : " + student.getName());
-        }
-        return ResponseEntity.badRequest().body("Cours non trouvé");
+    public ResponseEntity<String> addProduct(@RequestBody Product product) {
+        warehouse.addProduct(product);
+        return ResponseEntity.ok("Produit ajouté dans l'entrepôt.");
     }
-
     // Add a product to the user’s cart (POST)
     @PostMapping("/cart/add")
-    public ResponseEntity<String> addCourse(@RequestBody Course course) {
-        course.setCourseCode(ynov.getCourses().size() + 1);
-        ynov.addCourses(course);
-        return ResponseEntity.ok("Cours ajouté : " + course.getCourseName());
-    }
+    public ResponseEntity<String> addProductToCart(@RequestBody CartRequest request) {
+        User user = allUsers.getUserByEmail(request.email);
+        if (user == null) return ResponseEntity.badRequest().body("Utilisateur non trouvé.");
 
+        Product product = warehouse.getProductById(request.productId);
+        if (product == null) return ResponseEntity.badRequest().body("Produit non trouvé.");
+
+        user.getCart().addProduct(product);
+        return ResponseEntity.ok("Produit ajouté au panier.");
+    }
     // Remove a product from the cart (POST)
     @PostMapping("/cart/remove")
-    public ResponseEntity<String> addGrade(@RequestParam Float grade,@PathVariable int studentId) {
-        Student student = ynov.getStudentById(studentId);
-        if (student != null) {
-            student.addGrade(grade);
-            return ResponseEntity.ok("Note ajoutée : " + grade);
+    public ResponseEntity<String> removeProductFromCart(@RequestBody CartRequest request) {
+        User user = allUsers.getUserByEmail(request.email);
+        if (user == null) {
+            return ResponseEntity.badRequest().body("Utilisateur non trouvé.");
         }
-        return ResponseEntity.badRequest().body("Étudiant non trouvé");
+
+        Product product = warehouse.getProductById(request.productId);
+        if (product == null) {
+            return ResponseEntity.badRequest().body("Produit non trouvé.");
+        }
+
+        Cart cart = user.getCart();
+        if (!cart.getItems().contains(product)) {
+            return ResponseEntity.badRequest().body("Le produit n'est pas dans le panier.");
+        }
+
+        cart.removeProduct(product);
+        return ResponseEntity.ok("Produit retiré du panier.");
     }
 
-    // Confirm an order. (POST)
-    @PostMapping("/orders/place")
-    public ResponseEntity<String> addGrade(@RequestParam Float grade,@PathVariable int studentId) {
-        Student student = ynov.getStudentById(studentId);
-        if (student != null) {
-            student.addGrade(grade);
-            return ResponseEntity.ok("Note ajoutée : " + grade);
+
+
+    // Confirm an order (POST)
+    public ResponseEntity<String> confirmOrder(@RequestBody User user) {
+        Cart cart = user.getCart();
+        if (cart == null || cart.getItems().isEmpty()) {
+            return ResponseEntity.badRequest().body("Votre panier est vide.");
         }
-        return ResponseEntity.badRequest().body("Étudiant non trouvé");*/
+
+        double total = cart.calculateTotal();
+        CreditCard payment = new CreditCard();
+
+
+        Order order = new Order(user, cart.getItems());
+        user.getOrderHistory().add(order);
+        cart.clearCart(); // Vider le panier après la commande
+
+        return ResponseEntity.ok("Commande confirmée. Total payé : " + total);
     }
+}

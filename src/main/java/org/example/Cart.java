@@ -9,6 +9,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class Cart {
     private User user;
+    @Getter
     private ArrayList<Product> items;
 
     public Cart(User user) {
@@ -26,5 +27,9 @@ public class Cart {
 
     public double calculateTotal() {
         return items.stream().mapToDouble(Product::getPrice).sum();
+    }
+
+    public void clearCart() {
+        items.clear();
     }
 }
