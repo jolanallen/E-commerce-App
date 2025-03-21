@@ -1,4 +1,4 @@
-package org.example;
+package fr.EcommerceApp.order.payment;
 
 public class PayPal extends PaymentMethod {
     @Override

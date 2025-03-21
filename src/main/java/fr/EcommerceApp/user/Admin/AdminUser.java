@@ -1,4 +1,6 @@
-package org.example;
+package fr.EcommerceApp.user.Admin;
+
+import fr.EcommerceApp.user.User;
 
 public class AdminUser extends User {
     public AdminUser(String username, String email, String password) {

@@ -1,8 +1,10 @@
-package org.example;
+package fr.EcommerceApp.order;
 
-import org.springframework.boot.autoconfigure.web.servlet.JerseyApplicationPath;
-import org.mindrot.jbcrypt.BCrypt;
+import fr.EcommerceApp.Warehouse.products.Product;
+
 import java.util.ArrayList;
+import fr.EcommerceApp.user.User;
+
 
 
 public class Order {

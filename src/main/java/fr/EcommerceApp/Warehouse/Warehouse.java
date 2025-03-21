@@ -1,6 +1,8 @@
-package org.example;
+package fr.EcommerceApp.Warehouse;
 
 import java.util.ArrayList;
+
+import fr.EcommerceApp.Warehouse.products.Product;
 import lombok.Getter;
 
 public class Warehouse {

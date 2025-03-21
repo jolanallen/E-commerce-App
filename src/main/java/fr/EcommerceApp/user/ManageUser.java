@@ -1,14 +1,15 @@
-package org.example;
+package fr.EcommerceApp.user;
 
 import java.util.ArrayList;
+
 import lombok.Getter;
 
 
-public class AllUsers {
+public class ManageUser {
     @Getter
     public ArrayList<User> listOfUsers;
 
-    public AllUsers (){
+    public ManageUser (){
         this.listOfUsers = new ArrayList<>();
     }
 

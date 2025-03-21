@@ -1,4 +1,4 @@
-package org.example;
+package fr.EcommerceApp.user;
 
 public class RegularUser extends User {
     public RegularUser(String username, String email, String password) {

@@ -1,5 +1,7 @@
-package org.example;
+package fr.EcommerceApp.user;
 
+import fr.EcommerceApp.order.cart.Cart;
+import fr.EcommerceApp.order.Order;
 import org.mindrot.jbcrypt.BCrypt;
 import java.util.ArrayList;
 import lombok.Getter;

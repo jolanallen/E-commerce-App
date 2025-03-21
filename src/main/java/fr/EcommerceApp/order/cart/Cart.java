@@ -1,10 +1,10 @@
-package org.example;
+package fr.EcommerceApp.order.cart;
 
 import lombok.Getter;
 import java.util.*;
-import org.springframework.boot.autoconfigure.web.servlet.JerseyApplicationPath;
-import org.mindrot.jbcrypt.BCrypt;
 
+import fr.EcommerceApp.Warehouse.products.Product;
+import fr.EcommerceApp.user.User;
 
 
 public class Cart {

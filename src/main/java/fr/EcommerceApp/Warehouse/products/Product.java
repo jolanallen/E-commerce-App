@@ -1,4 +1,4 @@
-package org.example;
+package fr.EcommerceApp.Warehouse.products;
 
 import lombok.Getter;
 

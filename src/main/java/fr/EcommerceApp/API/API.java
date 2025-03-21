@@ -1,18 +1,28 @@
-package org.example;
+package fr.EcommerceApp.API;
 
+import fr.EcommerceApp.Warehouse.Warehouse;
+import fr.EcommerceApp.Warehouse.products.Product;
+import fr.EcommerceApp.order.Order;
+import fr.EcommerceApp.user.ManageUser;
+import fr.EcommerceApp.user.RegularUser;
+import fr.EcommerceApp.user.User;
+
+
+import fr.EcommerceApp.order.cart.Cart;
+import fr.EcommerceApp.order.cart.CartRequest;
+import fr.EcommerceApp.order.payment.CreditCard;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
 import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api") // URL de base pour l'API
 public class API {
 
     public Warehouse warehouse = new Warehouse();
-    public AllUsers allUsers = new AllUsers();
+    public ManageUser allUsers = new ManageUser();
 
 
     public API() {
@@ -37,8 +47,9 @@ public class API {
 
     @GetMapping("/")
     public String getApi() {
-        return "api est le best";
+        return "Bienvenue dans notre API de E-commerce-App !";
     }
+
 
 
     // List all products.
