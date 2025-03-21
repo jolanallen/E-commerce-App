@@ -2,6 +2,7 @@ package org.example;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 
 import java.util.ArrayList;
@@ -37,8 +38,9 @@ public class API {
 
     @GetMapping("/")
     public String getApi() {
-        return "api est le best";
+        return "Bienvenue dans notre API de E-commerce-App !";
     }
+
 
 
     // List all products.
