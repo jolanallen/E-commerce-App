@@ -17,11 +17,11 @@ public class AllUsers {
     }
 
     public User getUserByEmail(String email) {
-        for (User user : listOfUsers) {
-            if (user.getEmail().equalsIgnoreCase(email)) { // Ignorer la casse
-                return user;
+        for (User u : this.listOfUsers) {
+            if (u.getEmail().equalsIgnoreCase(email)) {
+                return u;
             }
         }
-        return null; // Retourne null si aucun utilisateur trouvé
+        return null;
     }
 }
