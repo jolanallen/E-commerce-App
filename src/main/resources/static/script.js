@@ -1,7 +1,7 @@
-fetch('http://localhost:3000/api/products')
-    .then(response => response.json())
-    .then(products => {
-        const productList = document.getElementById('product-list');
+fetch('http://localhost:3000/api/products')//fetch data with the back end
+    .then(response => response.json()) //convert the response to json
+    .then(products => { //handles the products data
+        const productList = document.getElementById('product-list'); //handles the products data
 
         products.forEach(product => {
             const card = document.createElement('div');
@@ -10,12 +10,11 @@ fetch('http://localhost:3000/api/products')
             card.innerHTML = `
         <h2>Product ID: ${product.productID}</h2>
         <p>${product.productDetails}</p>
-        <p>Price: $${product.price}</p>
-      `;
+      `; //here you have the product data
 
             productList.appendChild(card);
         });
     })
     .catch(error => {
         console.error('Error fetching products:', error);
-    });
+    }); //handling errors
