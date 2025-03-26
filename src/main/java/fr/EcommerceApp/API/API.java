@@ -6,6 +6,8 @@ import fr.EcommerceApp.order.Order;
 import fr.EcommerceApp.user.ManageUser;
 import fr.EcommerceApp.user.RegularUser;
 import fr.EcommerceApp.user.User;
+import fr.EcommerceApp.user.AdminUser;
+import fr.EcommerceApp.user.UserType;
 
 
 import fr.EcommerceApp.order.cart.Cart;
@@ -26,7 +28,7 @@ public class API {
 
 
     public API() {
-        User user1 = new RegularUser("john_doe", "john@example.com", "password123");
+        User user1 = new RegularUser("john_doe", "john@example.com", "password123",allUsers.listOfUsers.size()+1);
         allUsers.addUser(user1);
         user1.login("john@example.com", "password123");
 
@@ -85,11 +87,15 @@ public class API {
             }
         }
 
-        user.registers(user.getUsername(), user.getEmail(), user.getPassword());
-        Cart cart = new Cart(user);
-        allUsers.addUser(user);
+        User newUser;
+        if (user.getUserType() == UserType.ADMIN) {
+            newUser = new AdminUser(user.getUsername(), user.getEmail(), user.getPassword(), allUsers.listOfUsers.size()+1);
+        } else {
+            newUser = new RegularUser(user.getUsername(), user.getEmail(), user.getPassword(),allUsers.listOfUsers.size()+1);
+        }
 
-        return ResponseEntity.ok("Utilisateur ajouté avec succès : " + user.getUsername());
+        allUsers.addUser(newUser);
+        return ResponseEntity.ok("Utilisateur ajouté avec succès : " + newUser.getUsername());
     }
 
     // authenticate (POST)
@@ -98,14 +104,14 @@ public class API {
         String email = user.getEmail();
         String password = user.getPassword();
 
-        // Boucler pour retrouver l'utilisateur
         for (User u : allUsers.listOfUsers) {
             if (u.checkEmail(email) && u.checkPassword(password)) {
-                return ResponseEntity.ok("Connexion réussie pour : " + user.getUsername());
+                return ResponseEntity.ok("Connexion réussie pour : " + u.getUsername() + " (" + u.getUserType() + ")");
             }
         }
         return ResponseEntity.badRequest().body("Échec de la connexion : Identifiants invalides.");
     }
+
 
     // Add a new product (POST)
     @PostMapping("/products")
@@ -150,6 +156,7 @@ public class API {
 
 
     // Confirm an order (POST)
+    @PostMapping("/orders/place")
     public ResponseEntity<String> confirmOrder(@RequestBody User user) {
         Cart cart = user.getCart();
         if (cart == null || cart.getItems().isEmpty()) {

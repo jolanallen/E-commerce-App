@@ -11,6 +11,7 @@ fetch('http://localhost:3000/api/users')
                 <h2>User ID: ${user.id_user}</h2>
                 <p>Email: ${user.email}</p>
                 <p>Name: ${user.username}</p>
+                <p>ID: ${user.id_user}</p>
             `;
 
             userList.appendChild(card);

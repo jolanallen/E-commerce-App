@@ -15,47 +15,46 @@ public class User {
     private int id_user;
     private boolean isRegistered;
     private Cart cart;
+    private UserType userType;
 
     public User() {
-        // Required for JSON deserialization by Spring
     }
 
-    // Constructeur
-    public User(String username, String email, String password) {
+    public User(String username, String email, String password, UserType userType, int id_user) {
         this.username = username;
         this.email = email;
         this.password = hashPassword(password);
         this.isRegistered = true;
+        this.id_user = id_user;
         this.orderHistory = new ArrayList<>();
         this.cart = new Cart(this);
+        this.userType = userType;
     }
 
-    // Méthode d'inscription
-    public void registers(String username, String email, String password) {
+    // Inscription
+    public void registers(String username, String email, String password, UserType userType, int id_user) {
         this.username = username;
         this.email = email;
         this.password = hashPassword(password);
         this.isRegistered = true;
+        this.id_user = id_user;
         this.orderHistory = new ArrayList<>();
         this.cart = new Cart(this);
+        this.userType = userType;
     }
 
-    // Hachage du mot de passe
     private String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
-    // Vérifier un mot de passe
     public boolean checkPassword(String password) {
         return BCrypt.checkpw(password, this.password);
     }
 
-    // Vérifier un email
     public boolean checkEmail(String email) {
         return this.email.equals(email);
     }
 
-    // Connexion utilisateur
     public boolean login(String email, String password) {
         if (this.email.equals(email) && checkPassword(password)) {
             System.out.println("Login successful.");
@@ -66,10 +65,7 @@ public class User {
         }
     }
 
-    // Historique des commandes
     public ArrayList<Order> viewOrderHistory() {
         return orderHistory.isEmpty() ? null : orderHistory;
     }
-
-
 }
