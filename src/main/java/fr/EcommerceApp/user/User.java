@@ -16,6 +16,9 @@ public class User {
     private boolean isRegistered;
     private Cart cart;
 
+    public User() {
+        // Required for JSON deserialization by Spring
+    }
 
     // Constructeur
     public User(String username, String email, String password) {
